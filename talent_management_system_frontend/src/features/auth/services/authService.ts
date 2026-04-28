@@ -1,5 +1,6 @@
 import api, { setAccessToken, clearAccessToken } from '../../../api/axios';
-import { AUTH_ENDPOINTS, USER_ENDPOINTS } from '../../../api/endpoints';
+import { AUTH_ENDPOINTS } from '../endpoints/AuthEndpoints';
+import { USER_ENDPOINTS } from '../../talent/endpoints/TalentEndPoints';
 import type { AuthUser, LoginFormData, SignupFormData, ChangePasswordFormData, LoginActivity } from '../types/auth.types';
 
 export const authService = {

@@ -1,4 +1,4 @@
-import React from "react";
+
 type ConfirmDialogProps = {
   open: boolean;
   title?: string;

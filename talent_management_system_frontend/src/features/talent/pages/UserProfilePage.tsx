@@ -4,41 +4,25 @@ import { talentService } from "../services/talentService";
 import TalentCard from "../components/TalentCard";
 import TalentForm from "../components/TalentForm";
 import Modal from "../components/Modal";
-import TalentDetailModal from "../components/TalentDetailModal";
 import ConfirmDialog from "../../../components/common/ConfirmDialog";
 import type { Talent } from "../types/talent.types";
 import type { TalentFormData } from "../utils/talentValidators";
 
 export default function UserProfilePage() {
   const { user } = useAuthContext();
-  const isAdmin = user?.role === 'admin';
-
-  const [profiles, setProfiles] = useState<Talent[]>([]);
   const [profile, setProfile] = useState<Talent | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
-  const [detailTalent, setDetailTalent] = useState<Talent | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       if (!user) return;
-
       setLoading(true);
       try {
-        if (isAdmin) {
-          // Admin sees all registered users except their own
-          // We need to get all users, not just those with talent profiles
-          // For now, let's modify the talentService to get all users
-          const allUsers = await talentService.getAll();
-          const otherUsers = allUsers.filter(u => u.id !== user.id);
-          setProfiles(otherUsers);
-        } else {
-          // Regular user sees their own profile
-          const data = await talentService.getProfile();
-          setProfile(data);
-        }
+        const data = await talentService.getProfile();
+        setProfile(data);
         setError(null);
       } catch (e: unknown) {
         const error = e as Error;
@@ -47,9 +31,8 @@ export default function UserProfilePage() {
         setLoading(false);
       }
     };
-
     fetchData();
-  }, [user, isAdmin]);
+  }, [user]);
 
   const handleSubmit = async (data: TalentFormData) => {
     try {
@@ -93,7 +76,7 @@ export default function UserProfilePage() {
     return (
       <div className="p-10 text-white bg-bg min-h-screen text-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
-        <p className="mt-4">{isAdmin ? 'Loading complete user profiles...' : 'Loading profile...'}</p>
+        <p className="mt-4">Loading profile...</p>
       </div>
     );
   }
@@ -112,49 +95,6 @@ export default function UserProfilePage() {
     );
   }
 
-  if (isAdmin) {
-    // Admin view: List of all user profiles
-    if (profiles.length === 0) {
-      return (
-        <div className="p-10 text-white bg-bg min-h-screen text-center">
-          <p className="text-2xl font-semibold">No complete user profiles found</p>
-          <p className="mt-3 text-slate-300">Users haven't completed their profiles yet.</p>
-        </div>
-      );
-    }
-
-    return (
-      <div className="p-10 text-white bg-bg min-h-screen">
-        <div className="mb-8 max-w-4xl">
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-white">User Profiles</h1>
-          <p className="mt-3 text-slate-300 text-base md:text-lg leading-7 max-w-3xl">
-            Browse talent profiles across the organization and click any profile for details.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-4">
-          {profiles.map((p) => (
-            <TalentCard
-              key={p.id}
-              data={p}
-              onView={() => {
-                setDetailTalent(p);
-              }}
-              isAdminView={true}
-            />
-          ))}
-        </div>
-
-        {/* DETAIL MODAL */}
-        <TalentDetailModal
-          talent={detailTalent}
-          onClose={() => {
-            setDetailTalent(null);
-          }}
-        />
-      </div>
-    );
-  }
 
   // Regular user view: Individual profile
   if (!profile) {
@@ -186,9 +126,13 @@ export default function UserProfilePage() {
   }
 
   return (
-    <div className="p-10 text-white bg-bg min-h-screen">
-      <h1 className="text-3xl font-bold mb-6">My Profile</h1>
-
+    <div className="p-10 text-white bg-bg min-h-screen mt-5">
+      <h1 className="text-3xl font-bold mb-1">My <span className="text-green-400 block sm:inline">
+       Profile
+      </span> </h1>
+     <p className="text-slate-300 text-base md:text-lg leading-7 mb-6 max-w-2xl">
+  Manage your personal information, skills, and experience. Keep your profile updated so others can discover your talent.
+</p>
       <div className="max-w-2xl">
         <TalentCard
           data={profile}

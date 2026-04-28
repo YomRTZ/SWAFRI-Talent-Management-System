@@ -136,8 +136,8 @@ export const updateUserProfile = async (userId, data) => {
 
 /* -----------------------------
    Update user
-   - Admin cannot update other users' personal profile
-   - Users can update self
+   - Only users can update their own profile
+   - Admin cannot update any profile
 ----------------------------- */
 export const updateUser = async (currentUser, targetUserId, data) => {
   const user = await models.User.findOne({
@@ -146,19 +146,21 @@ export const updateUser = async (currentUser, targetUserId, data) => {
 
   if (!user) throw new AppError('User not found', 404);
 
-  // Normal user: can update only self, cannot update is_active
-  if (currentUser.role !== 'admin') {
-    if (currentUser.id !== targetUserId) throw new AppError('Access denied', 403);
-    delete data.is_active; // normal user cannot toggle active status
+  // Admin cannot update any user profile
+  if (currentUser.role === 'admin') {
+    throw new AppError('Access denied', 403);
   }
 
-  // Admin: can update is_active but not other sensitive fields
-  if (currentUser.role === 'admin') {
-    delete data.password_hash;
-    delete data.role_id;
-    delete data.is_deleted;
-    delete data.deleted_at;
+  // Normal user: can update only self
+  if (currentUser.id !== targetUserId) {
+    throw new AppError('Access denied', 403);
   }
+
+  delete data.is_active; // normal user cannot toggle active status
+  delete data.password_hash;
+  delete data.role_id;
+  delete data.is_deleted;
+  delete data.deleted_at;
 
   Object.assign(user, data);
   await user.save();
@@ -195,11 +197,17 @@ export const changePassword = async (userId, oldPassword, newPassword) => {
 
 /* -----------------------------
    Soft delete user
-   - Admin can delete any user
-   - User can delete self
+   - Only users can delete their own profile
+   - Admin cannot delete any profile
 ----------------------------- */
 export const deleteUser = async (currentUser, targetUserId) => {
-  if (currentUser.role !== 'admin' && currentUser.id !== targetUserId) {
+  // Admin cannot delete any user
+  if (currentUser.role === 'admin') {
+    throw new AppError('Access denied', 403);
+  }
+
+  // Normal user: can delete only self
+  if (currentUser.id !== targetUserId) {
     throw new AppError('Access denied', 403);
   }
 

@@ -1,5 +1,5 @@
 import api from '../../../api/axios';
-import { USER_ENDPOINTS } from '../../../api/endpoints';
+import { USER_ENDPOINTS } from '../endpoints/TalentEndPoints';
 import type { Talent } from '../types/talent.types';
 import type { TalentFormData } from '../utils/talentValidators';
 

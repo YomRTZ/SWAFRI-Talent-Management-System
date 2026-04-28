@@ -6,12 +6,10 @@ import {
   getServerErrorDetails,
   getDirectErrorMessage,
 } from "../errors/services/error.service";
-import { AUTH_ENDPOINTS } from "./endpoints";
+import { AUTH_ENDPOINTS } from "../features/auth/endpoints/AuthEndpoints";
 
-/* =========================================================
-   CONFIG
-========================================================= */
 
+// CONFIG
 const RETRY_CONFIG = {
   maxRetries: 3,
   retryDelay: 1000,
@@ -19,10 +17,8 @@ const RETRY_CONFIG = {
   retryableMethods: ["GET", "HEAD", "OPTIONS", "DELETE", "PUT", "PATCH"],
 };
 
-/* =========================================================
-   TYPES
-========================================================= */
 
+ //  TYPES
 export interface RetryConfig extends InternalAxiosRequestConfig {
   _retryCount?: number;
   _retry?: boolean;
@@ -36,10 +32,7 @@ export interface ApiError {
   errors?: Record<string, string[]>;
 }
 
-/* =========================================================
-   AXIOS INSTANCE
-========================================================= */
-
+// AXIOS INSTANCE
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000",
   withCredentials: true,
@@ -87,20 +80,14 @@ export async function refreshAccessToken() {
   throw new Error("Refresh token failed to return an access token");
 }
 
-/* =========================================================
-   AXIOS ERROR TYPES
-========================================================= */
-
+// AXIOS ERROR TYPES
 interface EnrichedAxiosError extends AxiosError<ApiError> {
   safeMessage?: string;
   serverDetails?: string;
   rawServerMessage?: string;
 }
 
-/* =========================================================
-   HELPERS
-========================================================= */
-
+// HELPERS
 const shouldRetry = (
   config: RetryConfig,
   error: AxiosError
@@ -131,9 +118,7 @@ const delay = (ms: number) =>
 const getRetryDelay = (count: number) =>
   RETRY_CONFIG.retryDelay * Math.pow(2, count);
 
-/* =========================================================
-   REQUEST INTERCEPTOR
-========================================================= */
+// REQUEST INTERCEPTOR
 
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
@@ -153,18 +138,13 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-/* =========================================================
-   RESPONSE INTERCEPTOR
-========================================================= */
-
+// RESPONSE INTERCEPTOR
 api.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: AxiosError<ApiError>) => {
     const config = error.config as RetryConfig;
 
-    /* -------------------------
-       REFRESH ON 401
-    -------------------------- */
+// REFRESH ON 401
     if (
       config &&
       error.response?.status === 401 &&
@@ -186,9 +166,7 @@ api.interceptors.response.use(
       }
     }
 
-    /* -------------------------
-       RETRY LOGIC
-    -------------------------- */
+    // RETRY LOGIC
     if (config && shouldRetry(config, error)) {
       config._retryCount = (config._retryCount ?? 0) + 1;
 
@@ -204,18 +182,16 @@ api.interceptors.response.use(
       window.dispatchEvent(new Event("auth:logout"));
     }
 
-     /* -------------------------
-       ATTACH ENRICHED ERROR
-     -------------------------- */
+     // ATTACH ENRICHED ERROR
     enrichError(error);
 
     return Promise.reject(error);
   }
 );
 
-/* =========================================================
-   ERROR ENRICHMENT
-========================================================= */
+
+  // ERROR ENRICHMENT
+
 
 function enrichError(error: EnrichedAxiosError) {
   const safeMessage = getUserSafeErrorTitle(error);
@@ -227,15 +203,8 @@ function enrichError(error: EnrichedAxiosError) {
   error.rawServerMessage = rawMessage;
 }
 
-/* =========================================================
-   401 HANDLER
-========================================================= */
 
-
-/* =========================================================
-   UTILITIES
-========================================================= */
-
+// UTILITIES
 export const createApiInstance = (
   baseURL: string,
   custom?: object

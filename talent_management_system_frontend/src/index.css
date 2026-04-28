@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg: #1e263e;
+    --surface: #2a3354;
+    --fg: #151a2e;
+  }
+
+  body {
+    @apply font-sans;
+    background-color: var(--bg);
+    color: #e5e7eb; 
+  }
+}

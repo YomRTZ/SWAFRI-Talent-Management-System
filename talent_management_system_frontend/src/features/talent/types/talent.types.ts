@@ -6,4 +6,5 @@ export interface Talent {
   experience: number;
   description: string;
   createdAt?: string;
+  isProfileComplete?: boolean;
 }

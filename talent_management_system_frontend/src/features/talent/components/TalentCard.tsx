@@ -11,6 +11,7 @@ type Props = {
 
 export default function TalentCard({ data, onEdit, onDelete, onView, isAdminView = false }: Props) {
   const avatarLetter = data.fullName?.charAt(0)?.toUpperCase() || '?';
+  const isIncomplete = onEdit && data.isProfileComplete !== true;
 
   return (
     <div
@@ -65,10 +66,24 @@ export default function TalentCard({ data, onEdit, onDelete, onView, isAdminView
           )}
         </div>
 
+       
         <div className="rounded-2xl bg-white/5 p-4 border border-white/10">
           <p className="text-xs uppercase tracking-[0.35em] text-slate-400">Experience</p>
           <p className="mt-2 text-base font-semibold text-white">{data.experience ? `${data.experience} year${data.experience === 1 ? '' : 's'}` : 'Not specified'}</p>
         </div>
+         {isIncomplete && (
+         <div className="rounded-2xl bg-amber-500/10 p-5 border border-amber-400/20 shadow-md backdrop-blur-sm">
+  <div>
+    <p className="text-base font-semibold text-amber-100">
+      Complete your profile
+    </p>
+    <p className="mt-1 text-sm text-amber-200/80 leading-relaxed">
+      Add your skills, experience, and a short description to showcase your talent and get discovered by recruiters.
+    </p>
+  </div>
+</div>
+        )}
+
       </div>
     </div>
   );

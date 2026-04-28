@@ -21,6 +21,7 @@ type BackendUser = {
   years_of_experience: number;
   description: string;
   createdAt: string;
+  isProfileComplete?: boolean;
 };
 
 export const talentService = {
@@ -109,6 +110,7 @@ export const talentService = {
       experience: user.years_of_experience,
       description: user.description,
       createdAt: user.createdAt,
+      isProfileComplete: user.isProfileComplete,
     } as Talent;
   },
 
@@ -130,6 +132,7 @@ export const talentService = {
       experience: user.years_of_experience,
       description: user.description,
       createdAt: user.createdAt,
+      isProfileComplete: user.isProfileComplete,
     } as Talent;
   },
 
@@ -149,6 +152,7 @@ export const talentService = {
       experience: user.years_of_experience,
       description: user.description,
       createdAt: user.createdAt,
+      isProfileComplete: user.isProfileComplete,
     } as Talent;
   },
 };

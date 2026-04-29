@@ -101,6 +101,16 @@ talnet_management_system_backend/
    npm run dev
    ```
 
+## Quick Start Login
+
+> **Admin Access**  
+> Use these credentials to explore admin features:
+> - **Email:** `admin@gmail.com`  
+> - **Password:** `admin123`
+
+> **User Registration**  
+> New users can register and sign in as normal users. Default role is 'user'.
+
 ### Docker Setup (Alternative)
 
 For the backend, you can use Docker Compose:

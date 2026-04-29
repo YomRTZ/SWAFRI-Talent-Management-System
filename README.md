@@ -1,7 +1,7 @@
 # Talent Management System
 
-A comprehensive full-stack application for managing talents, designed to streamline recruitment and talent acquisition processes. This system provides a user-friendly interface for administrators and users to handle talent profiles, authentication, and role-based access control.
-
+A full-stack system for managing talent and simplifying the hiring process. It provides an easy interface for users and administrators to manage talent profiles, authentication, and role-based access control.
+ ## For more information on how the frontend and backend work, please refer to the README files in both the frontend and backend directories. 
 ## Demo
 
 Check out the live demo: [https://shimmering-bunny-31b2c6.netlify.app/](https://shimmering-bunny-31b2c6.netlify.app/)

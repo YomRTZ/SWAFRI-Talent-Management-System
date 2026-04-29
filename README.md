@@ -129,8 +129,8 @@ The system implements a secure token-based authentication:
 
 ### User Management
 - `GET /user/profile` - Get user profile (authenticated)
-- `GET /admin/dashboard` - Admin dashboard (admin only)
-- `GET /admin/listUsers` - List all users (admin only)
+- `GET /user` - List all users (admin only)
+- `GET /user/:id` - Get user by ID (admin only)
 
 ## Security Features
 

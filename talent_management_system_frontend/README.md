@@ -70,10 +70,12 @@ The application uses a secure token-based authentication system:
 
 Create a `.env` file in the root directory with:
 
-```env
+```env dev
 VITE_API_BASE_URL=http://localhost:5000
 ```
-
+```env production
+VITE_API_BASE_URL=https://swafri-talent-management-system-backend.onrender.com
+```
 ## Project Structure
 
 ```

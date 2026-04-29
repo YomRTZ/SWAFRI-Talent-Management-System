@@ -34,21 +34,19 @@ export const login = catchAsync(async (req, res) => {
       await service.loginUser({ ...req.body, password_hash: password }, req)
 
     // Check if request is from same origin (browser) or different origin
-    const origin = req.headers.origin;
-    const isSameOrigin = !origin || origin.includes('localhost') || origin.includes('netlify.app');
-    // Use 'Lax' for same origin to allow cookie to work across subdomains/ports
-    // Use 'none' for cross-origin (requires Secure flag in production)
-    const sameSite = isSameOrigin ? 'Lax' : 'none';
+    const isProduction = process.env.NODE_ENV === 'production';
+    // Use 'Lax' for dev (localhost), 'none' for production (cross-origin)
+    const sameSite = isProduction ? 'none' : 'Lax';
 
     // Set refresh token in HttpOnly cookie ONLY
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: isProduction,
       sameSite: sameSite,
       path: '/',
       maxAge: rememberMe
-        ? 30 * 24 * 60 * 60 * 1000 // 30 days
-        : 24 * 60 * 60 * 1000, // 1 day
+        ? 30 * 24 * 60 * 60 * 1000 
+        : 24 * 60 * 60 * 1000, 
     })
 
     // Return access token in response body (frontend will store in memory)
@@ -84,20 +82,18 @@ export const refreshToken = catchAsync(async (req, res) => {
     const { accessToken, newRefreshToken } = await service.rotateRefreshToken(token, req)
 
     // Check if request is from same origin (browser) or different origin
-    const origin = req.headers.origin;
-    const isSameOrigin = !origin || origin.includes('localhost') || origin.includes('netlify.app');
-    // Use 'Lax' for same origin to allow cookie to work across subdomains/ports
-    // Use 'none' for cross-origin (requires Secure flag in production)
-    const sameSite = isSameOrigin ? 'Lax' : 'none';
+    const isProduction = process.env.NODE_ENV === 'production';
+    // Use 'Lax' for dev (localhost), 'none' for production (cross-origin)
+    const sameSite = isProduction ? 'none' : 'Lax';
 
     // If rotation happened, set new refresh token cookie
     if (newRefreshToken) {
       res.cookie('refreshToken', newRefreshToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: isProduction,
         sameSite: sameSite,
         path: '/',
-        maxAge: 24 * 60 * 60 * 1000, // 1 day
+        maxAge: 24 * 60 * 60 * 1000, 
       })
     }
 
@@ -113,13 +109,12 @@ export const refreshToken = catchAsync(async (req, res) => {
     }
     
     // Clear the invalid refresh token cookie
-    const origin = req.headers.origin;
-    const isSameOrigin = !origin || origin.includes('localhost') || origin.includes('netlify.app');
-    const sameSite = isSameOrigin ? 'Lax' : 'none';
+    const isProduction = process.env.NODE_ENV === 'production';
+    const sameSite = isProduction ? 'none' : 'Lax';
     
     res.clearCookie('refreshToken', {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: isProduction,
       sameSite: sameSite,
       path: '/',
     })
@@ -135,15 +130,13 @@ export const logout = catchAsync(async (req, res) => {
     if (token) await service.revokeRefreshToken(token)
 
     // Check if request is from same origin (browser) or different origin
-    const origin = req.headers.origin;
-    const isSameOrigin = !origin || origin.includes('localhost') || origin.includes('netlify.app');
-    // Use 'Lax' for same origin to allow cookie to work across subdomains/ports
-    // Use 'none' for cross-origin (requires Secure flag in production)
-    const sameSite = isSameOrigin ? 'Lax' : 'none';
+    const isProduction = process.env.NODE_ENV === 'production';
+    // Use 'Lax' for dev (localhost), 'none' for production (cross-origin)
+    const sameSite = isProduction ? 'none' : 'Lax';
 
     res.clearCookie('refreshToken', {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: isProduction,
       sameSite: sameSite,
       path: '/',
     })
@@ -163,10 +156,10 @@ export const getLoginActivity = catchAsync(async (req, res) => {
     const refreshTokens = await models.RefreshToken.findAll({
       where: {
         user_id: userId,
-        revoked_at: null, // Only active tokens
+        revoked_at: null, 
       },
       order: [['createdAt', 'DESC']],
-      limit: 10, // Limit to last 10 sessions for performance
+      limit: 10, 
     });
 
     // Format the data for frontend
@@ -175,7 +168,7 @@ export const getLoginActivity = catchAsync(async (req, res) => {
       device: token.device || 'Unknown Device',
       ip: token.ip || 'Unknown IP',
       createdAt: token.createdAt,
-      lastUsed: token.createdAt, // For now, use createdAt as lastUsed
+      lastUsed: token.createdAt, 
     }));
 
     res.json({

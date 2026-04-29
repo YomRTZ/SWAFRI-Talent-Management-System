@@ -6,6 +6,16 @@ A full-stack system for managing talent and simplifying the hiring process. It p
 
 Check out the live demo: [https://shimmering-bunny-31b2c6.netlify.app/](https://shimmering-bunny-31b2c6.netlify.app/)
 
+## Quick Start Login
+
+> **Admin Access**  
+> Use these credentials to explore admin features:  
+> - **Email:** `admin@gmail.com`  
+> - **Password:** `admin123`
+
+> **User Registration**  
+> New users can register and sign in as normal users. Default role is 'user'.
+
 ## Features
 
 - **User Authentication**: Secure login and signup with JWT-based authentication
@@ -100,16 +110,6 @@ talnet_management_system_backend/
    cp .env.example .env  # Configure API base URL
    npm run dev
    ```
-
-## Quick Start Login
-
-> **Admin Access**  
-> Use these credentials to explore admin features:
-> - **Email:** `admin@gmail.com`  
-> - **Password:** `admin123`
-
-> **User Registration**  
-> New users can register and sign in as normal users. Default role is 'user'.
 
 ### Docker Setup (Alternative)
 

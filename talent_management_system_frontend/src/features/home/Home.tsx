@@ -1,4 +1,3 @@
-import React from "react";
 import Cards from '../../components/common/Card'
 import type { AuthModalOption } from '../../features/auth/types/auth.types'
 

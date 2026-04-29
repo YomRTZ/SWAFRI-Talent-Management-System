@@ -27,7 +27,10 @@ export const errorHandler = (err, req, res, next) => {
 
   // DEV vs PROD
   if (process.env.NODE_ENV === 'development') {
-    console.error('🔥 ERROR:', err);
+    // Don't log 401 errors for refresh token endpoint (expected when no session)
+    if (!(error.statusCode === 401 && req.originalUrl === '/auth/refresh-token')) {
+      console.error('🔥 ERROR:', err);
+    }
 
     return res.status(error.statusCode).json({
       success: false,

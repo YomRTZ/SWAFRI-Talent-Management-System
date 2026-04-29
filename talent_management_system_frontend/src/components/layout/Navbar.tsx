@@ -118,22 +118,6 @@ function Navbar({ setOpenModal }: NavbarProps) {
           <span className="hidden sm:block">{portLabel}</span>
         </button>
 
-        {/* Login */}
-        {!user && (
-          <button
-            onClick={() => setOpenModal("login")}
-          className="flex items-center gap-2 
-  px-5 py-2 rounded-full
-  text-gray-300
-  hover:text-white
-  hover:bg-white/10
-  active:scale-95
-  transition-all duration-200"
-          >
-            Login
-          </button>
-        )}
-
         {/* Settings Dropdown (logged in users only) */}
         {user && (
           <div className="relative" ref={settingsRef}>
@@ -187,7 +171,7 @@ function Navbar({ setOpenModal }: NavbarProps) {
         {/* Join / Logout */}
         {!user ? (
           <button
-            onClick={() => setOpenModal("signup")}
+            onClick={() => setOpenModal("login")}
             className="px-6 py-2.5 
   rounded-full
   bg-gradient-to-r from-green-400 to-emerald-500

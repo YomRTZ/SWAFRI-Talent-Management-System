@@ -107,7 +107,10 @@ export const refreshToken = catchAsync(async (req, res) => {
       data: { accessToken },
     })
   } catch (error) {
-    console.error('Refresh token controller error:', error)
+    // Don't log expected errors for missing refresh token
+    if (error.message !== 'Refresh token missing. Please log in again.') {
+      console.error('Refresh token controller error:', error)
+    }
     
     // Clear the invalid refresh token cookie
     const origin = req.headers.origin;

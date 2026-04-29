@@ -26,6 +26,7 @@ app.use(cookieParser());
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",
+  "https://shimmering-bunny-31b2c6.netlify.app"
 ];
 
 app.use(
